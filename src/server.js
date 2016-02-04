@@ -46,9 +46,9 @@ function getMemeUrl(episode, timestamp, caption) {
 function getSlackResponse(text, memeUrl) {
   return {
     response_type: 'in_channel',
-    text,
     attachments: [
       {
+        text,
         fallback: 'There should be a cool Simpsons quote here.',
         image_url: memeUrl,
       },
