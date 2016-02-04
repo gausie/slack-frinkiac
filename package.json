@@ -1,0 +1,33 @@
+{
+  "name": "slack-frinkiac",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/bundle.js",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.4"
+  },
+  "devDependencies": {
+    "babel-core": "^6.4.5",
+    "babel-eslint": "^4.1.8",
+    "babel-loader": "^6.2.2",
+    "babel-plugin-transform-object-rest-spread": "^6.3.13",
+    "babel-preset-es2015": "^6.3.13",
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^5.0.0",
+    "webpack": "^1.12.12"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gausie/slack-frinkiac.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gausie/slack-frinkiac/issues"
+  },
+  "homepage": "https://github.com/gausie/slack-frinkiac#readme"
+}
