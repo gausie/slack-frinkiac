@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import axios from 'axios';
 
 // Configure environment variables
-const frinkiac = process.env.API || 'https://frinkiac.com';
+const frinkiac = process.env.API || 'http://frinkiac.com';
 const lineLength = process.env.LINE_LENGTH || 25;
 const port = process.env.PORT || 3000;
 
@@ -42,6 +42,20 @@ function getMemeUrl(episode, timestamp, caption) {
   return `${frinkiac}/meme/${episode}/${timestamp}.jpg?lines=${encodeURIComponent(caption)}`;
 }
 
+// Return Slack Response object for meme.
+function getSlackResponse(text, memeUrl) {
+  return {
+    response_type: 'in_channel',
+    text,
+    attachments: [
+      {
+        fallback: 'There should be a cool Simpsons quote here.',
+        image_url: memeUrl,
+      },
+    ],
+  };
+}
+
 // Handle Slack commands
 app.post('/', (req, res) => {
   const { text } = req.body;
@@ -50,9 +64,10 @@ app.post('/', (req, res) => {
     .then(result => api.get(`/caption?e=${result.Episode}&t=${result.Timestamp}`)
       .then(caption => getCaptionString(caption.data, lineLength))
       .then(captionString => getMemeUrl(result.Episode, result.Timestamp, captionString))
-      .then(memeUrl => res.send(memeUrl))
+      .then(memeUrl => getSlackResponse(text, memeUrl))
+      .then(slackResponse => res.send(slackResponse))
     )
-    .catch(error => res.status(500).send(error));
+    .catch(() => res.status(500).send(`Frinkiac could not match ${text}`));
 });
 
 // Start the server
