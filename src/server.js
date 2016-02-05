@@ -68,7 +68,14 @@ app.get('/auth', (req, res) => {
       code,
     },
   })
-    .then(response => res.send(response));
+    .then(response => {
+      const { data } = response;
+      if (data.ok) {
+        res.send(`You can now use /frinkiac [simpsons quote] in ${data.team_name}!`);
+      } else {
+        res.send('An error occurred and you could not be authorized.');
+      }
+    });
 });
 
 // Handle Slack commands
