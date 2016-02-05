@@ -6,6 +6,8 @@ import axios from 'axios';
 const frinkiac = process.env.API || 'http://frinkiac.com';
 const lineLength = process.env.LINE_LENGTH || 25;
 const port = process.env.PORT || 3000;
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
 
 // Configure HTTP server
 const app = express();
@@ -56,8 +58,21 @@ function getSlackResponse(text, memeUrl) {
   };
 }
 
+// Handle OAuth
+app.get('/auth', (req, res) => {
+  const code = req.query.code;
+  axios.get('https://slack.com/api/oauth.access', {
+    params: {
+      client_id: clientId,
+      client_secret: clientSecret,
+      code,
+    },
+  })
+    .then(response => res.send(response));
+});
+
 // Handle Slack commands
-app.post('/', (req, res) => {
+app.post('/cmd', (req, res) => {
   const { text } = req.body;
   api.get(`/search?q=${encodeURIComponent(text)}`)
     .then(results => results.data[Math.floor(Math.random() * results.data.length)])
@@ -71,5 +86,4 @@ app.post('/', (req, res) => {
 });
 
 // Start the server
-
 app.listen(port);
