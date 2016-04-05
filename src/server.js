@@ -18,6 +18,14 @@ const api = axios.create({
   baseURL: `${frinkiac}/api`,
 });
 
+function parseCommand(rawCommand) {
+  const command = (rawCommand || '').trim();
+  const random = command.startsWith('random');
+  const text = (random ? command.substring(6).trim() : command);
+
+  return { text, random };
+}
+
 // Return meme caption string for set of subtitles.
 // This is based on the code actually used on frinkiac.com.
 function getCaptionString(caption, maxLinelength) {
@@ -80,9 +88,9 @@ app.get('/auth', (req, res) => {
 
 // Handle Slack commands
 app.post('/cmd', (req, res) => {
-  const { text } = req.body;
+  const { text, random } = parseCommand(req.body.text);
   api.get(`/search?q=${encodeURIComponent(text)}`)
-    .then(results => results.data[Math.floor(Math.random() * results.data.length)])
+    .then(results => results.data[random ? Math.floor(Math.random() * results.data.length) : 0])
     .then(result => api.get(`/caption?e=${result.Episode}&t=${result.Timestamp}`)
       .then(caption => getCaptionString(caption.data, lineLength))
       .then(captionString => getMemeUrl(result.Episode, result.Timestamp, captionString))
