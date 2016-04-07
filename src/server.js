@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import axios from 'axios';
+import yargs from 'yargs';
 
 // Configure environment variables
 const frinkiac = process.env.API || 'http://frinkiac.com';
@@ -19,9 +20,11 @@ const api = axios.create({
 });
 
 function parseCommand(rawCommand) {
-  const command = (rawCommand || '').trim();
-  const random = command.startsWith('random');
-  const text = (random ? command.substring(6).trim() : command);
+  const { _: searchArray, random } = yargs
+    .boolean('random')
+    .parse(rawCommand.split(' '));
+
+  const text = searchArray.join(' ');
 
   return { text, random };
 }
