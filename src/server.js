@@ -22,7 +22,11 @@ const api = axios.create({
 function parseCommand(rawCommand) {
   const { _: searchArray, random } = yargs
     .boolean('random')
-    .parse(rawCommand.split(' '));
+    .parse(
+      rawCommand
+        .replace('—', '--')
+        .split(' ')
+    );
 
   const text = searchArray.join(' ');
 
